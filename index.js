@@ -13,6 +13,8 @@
  * It returns the string `foofoo`
 */
 
+// test
+
 function processFirstItem(stringList, callback) {
   return callback(stringList[0])
 }
