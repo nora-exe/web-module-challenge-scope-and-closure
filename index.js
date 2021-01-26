@@ -13,8 +13,6 @@
  * It returns the string `foofoo`
 */
 
-// test
-
 function processFirstItem(stringList, callback) {
   return callback(stringList[0])
 }
@@ -30,11 +28,18 @@ console.log(processFirstItem(['foo','bar'],function(str){return str+str}));
   Study the code for counter1 and counter2, then answer the questions below.
   
   1. What is the difference between counter1 and counter2?
+
+  // counter 2 has a global count. count increment within counter2() saves lines of code & saves a function (don't need counterMaker).
   
   2. Which of the two uses a closure? How can you tell?
-  
+
+  // counter1 uses a closure because there's 2 nested functions, and count is outside counter().
+
   3. In what scenario would the counter1 code be preferable? In what scenario would 
      counter2 be better?  
+
+  // counter2 is overall more efficient, but global variables are more likely to cause bugs if multiple programmers are developing a project.
+
 */
 
 // counter1 code
@@ -64,8 +69,8 @@ Use the inning function below to do the following:
 NOTE: This will be a callback function for the tasks below
 */
 
-function inning(/*Code Here*/){
-    /*Code Here*/
+function inning(){
+    return Math.floor(Math.random() * 2);
 }
 
 
@@ -83,18 +88,31 @@ Use the finalScore function below to do the following:
 }
 */ 
 
-function finalScore(/*code Here*/){
-  /*Code Here*/
+function finalScore(inning,innings){
+  let scoreTotal = {'Home':0, 'Away':0};
+  for (let i = 0; i < innings; i++) {
+    scoreTotal.Home = scoreTotal.Home + inning();
+    scoreTotal.Away = scoreTotal.Away + inning();
+  }
+  return scoreTotal;
 }
+
+console.log(finalScore(inning,9));
+
 
 /* ⚾️⚾️⚾️ Task 4: getInningScore() ⚾️⚾️⚾️
 Use the getInningScore() function below to do the following:
   1. Receive a callback function - you will pass in the inning function from task 2 as your argument 
   2. Return an object with a score for home and a score for away that populates from invoking the inning callback function */
 
-function getInningScore(/*Your Code Here */) {
-  /*Your Code Here */
+function getInningScore(inning) {
+  return {
+    Home: inning(),
+    Away: inning()
+    }
 }
+
+
 
 
 /* ⚾️⚾️⚾️ Task 5: scoreboard() ⚾️⚾️⚾️
@@ -103,7 +121,7 @@ Use the scoreboard function below to do the following:
   2. Receive the callback function `inning` from Task 2
   3. Receive a number of innings to be played
   4. Return an array where each of it's index values equals a string stating the
-  Home and Away team's scores for each inning.  Not the cummulative score.
+  Home and Away team's scores for each inning.  Not the cumulative score.
   5. If there's a tie at the end of the innings, add this message containing the score to the end of the array:  "This game will require extra innings: Away 12 - Home 12"  (see tie example below)
      If there isn't a tie, add this message to the end of the array: "Final Score: Away 13 - Home 11"  (see no tie example below)
   
@@ -138,9 +156,29 @@ Use the scoreboard function below to do the following:
 ]  
   */
 
-function scoreboard(/* CODE HERE */) {
-  /* CODE HERE */
+function scoreboard(getInningScore, inning, number){
+  let scoreTotal = {'Home':0, 'Away':0};
+  const gameTotal = []; //open new array
+
+  for (let i = 0; i < number; i++) { //loop through the innings
+    let inningScore = getInningScore(inning); //run getInningScore(inning) to get a score for that inning
+
+    // Add each inning to the TOTAL SCORE so we can track it for final score line in gameTotal[]:
+    scoreTotal.Home += inningScore.Home; // instead of scoreTotal.Home = scoreTotal.Home + inningScore.Home;
+    scoreTotal.Away += inningScore.Away;
+
+    gameTotal.push(`Inning ${i + 1}: Away: ${inningScore.Away} - Home: ${inningScore.Home}`); //add to array
+  }
+  // conditional for the last msg
+  if (scoreTotal.Home !== scoreTotal.Away) { //if final scores are NOT tied, return final score
+    gameTotal.push(`Final Score: Away: ${scoreTotal.Away} - Home: ${scoreTotal.Home}`);
+  } else {
+    gameTotal.push(`This game will require extra innings: Away: ${scoreTotal.Away} - Home: ${scoreTotal.Home}`); // if tied, return tie message & current score
+  }
+  return gameTotal; // return the array
 }
+
+console.log(scoreboard(getInningScore, inning, 9));
 
 
 
